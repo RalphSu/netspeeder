@@ -26,6 +26,7 @@ namespace netspeeder
             foundListBox.Items.Clear();
             interfaceListBox.Items.Clear();
             //computerFinder.RunWorkerAsync();
+            hostnamelbl.Text = Environment.MachineName;
             List<NetworkInterface> lni = new List<NetworkInterface>();
             foreach (NetworkInterface ni in NetworkInterface.GetAllNetworkInterfaces())
             {

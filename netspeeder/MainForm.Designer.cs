@@ -42,6 +42,14 @@
             this.bcastaddr = new System.Windows.Forms.Label();
             this.ipaddrlbl = new System.Windows.Forms.Label();
             this.ipaddr = new System.Windows.Forms.Label();
+            this.downloadSpeedlbl = new System.Windows.Forms.Label();
+            this.downloadSpeedVlbl = new System.Windows.Forms.Label();
+            this.uploadSpeedlbl = new System.Windows.Forms.Label();
+            this.uploadSpeedVlbl = new System.Windows.Forms.Label();
+            this.testProgressBar = new System.Windows.Forms.ProgressBar();
+            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.hostlbl = new System.Windows.Forms.Label();
+            this.hostnamelbl = new System.Windows.Forms.Label();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -118,73 +126,160 @@
             this.interfaceListBox.Name = "interfaceListBox";
             this.interfaceListBox.Size = new System.Drawing.Size(167, 21);
             this.interfaceListBox.TabIndex = 3;
+            this.toolTip.SetToolTip(this.interfaceListBox, "Adapter to search for other computers on");
             this.interfaceListBox.SelectedIndexChanged += new System.EventHandler(this.interfaceListBox_SelectedIndexChanged);
             // 
             // netmasklbl
             // 
             this.netmasklbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.netmasklbl.AutoSize = true;
-            this.netmasklbl.Location = new System.Drawing.Point(228, 78);
+            this.netmasklbl.Location = new System.Drawing.Point(228, 91);
             this.netmasklbl.Name = "netmasklbl";
             this.netmasklbl.Size = new System.Drawing.Size(52, 13);
             this.netmasklbl.TabIndex = 6;
             this.netmasklbl.Text = "Netmask:";
+            this.toolTip.SetToolTip(this.netmasklbl, "Subnet Mask (used to determine if an address is on the same (sub)network)");
             // 
             // netmaskaddr
             // 
             this.netmaskaddr.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.netmaskaddr.AutoSize = true;
-            this.netmaskaddr.Location = new System.Drawing.Point(287, 78);
+            this.netmaskaddr.Location = new System.Drawing.Point(287, 91);
             this.netmaskaddr.Name = "netmaskaddr";
             this.netmaskaddr.Size = new System.Drawing.Size(53, 13);
             this.netmaskaddr.TabIndex = 7;
             this.netmaskaddr.Text = "Unknown";
+            this.toolTip.SetToolTip(this.netmaskaddr, "Subnet Mask (used to determine if an address is on the same (sub)network)");
             // 
             // bcastlbl
             // 
             this.bcastlbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.bcastlbl.AutoSize = true;
-            this.bcastlbl.Location = new System.Drawing.Point(222, 91);
+            this.bcastlbl.Location = new System.Drawing.Point(222, 104);
             this.bcastlbl.Name = "bcastlbl";
             this.bcastlbl.Size = new System.Drawing.Size(58, 13);
             this.bcastlbl.TabIndex = 8;
             this.bcastlbl.Text = "Broadcast:";
+            this.toolTip.SetToolTip(this.bcastlbl, "Broadcast address (address on which all computers on network receive message)");
             // 
             // bcastaddr
             // 
             this.bcastaddr.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.bcastaddr.AutoSize = true;
-            this.bcastaddr.Location = new System.Drawing.Point(287, 91);
+            this.bcastaddr.Location = new System.Drawing.Point(287, 104);
             this.bcastaddr.Name = "bcastaddr";
             this.bcastaddr.Size = new System.Drawing.Size(53, 13);
             this.bcastaddr.TabIndex = 9;
             this.bcastaddr.Text = "Unknown";
+            this.toolTip.SetToolTip(this.bcastaddr, "Broadcast address (address on which all computers on network receive message)");
             // 
             // ipaddrlbl
             // 
             this.ipaddrlbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.ipaddrlbl.AutoSize = true;
-            this.ipaddrlbl.Location = new System.Drawing.Point(235, 65);
+            this.ipaddrlbl.Location = new System.Drawing.Point(235, 78);
             this.ipaddrlbl.Name = "ipaddrlbl";
             this.ipaddrlbl.Size = new System.Drawing.Size(45, 13);
             this.ipaddrlbl.TabIndex = 10;
             this.ipaddrlbl.Text = "IP Addr:";
+            this.toolTip.SetToolTip(this.ipaddrlbl, "IP Address of this computer");
             // 
             // ipaddr
             // 
             this.ipaddr.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.ipaddr.AutoSize = true;
-            this.ipaddr.Location = new System.Drawing.Point(287, 65);
+            this.ipaddr.Location = new System.Drawing.Point(287, 78);
             this.ipaddr.Name = "ipaddr";
             this.ipaddr.Size = new System.Drawing.Size(53, 13);
             this.ipaddr.TabIndex = 11;
             this.ipaddr.Text = "Unknown";
+            this.toolTip.SetToolTip(this.ipaddr, "IP Address of this computer");
+            // 
+            // downloadSpeedlbl
+            // 
+            this.downloadSpeedlbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.downloadSpeedlbl.AutoSize = true;
+            this.downloadSpeedlbl.Location = new System.Drawing.Point(222, 117);
+            this.downloadSpeedlbl.Name = "downloadSpeedlbl";
+            this.downloadSpeedlbl.Size = new System.Drawing.Size(58, 13);
+            this.downloadSpeedlbl.TabIndex = 12;
+            this.downloadSpeedlbl.Text = "Download:";
+            this.toolTip.SetToolTip(this.downloadSpeedlbl, "Download Speed from test computer");
+            // 
+            // downloadSpeedVlbl
+            // 
+            this.downloadSpeedVlbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.downloadSpeedVlbl.AutoSize = true;
+            this.downloadSpeedVlbl.Location = new System.Drawing.Point(287, 117);
+            this.downloadSpeedVlbl.Name = "downloadSpeedVlbl";
+            this.downloadSpeedVlbl.Size = new System.Drawing.Size(53, 13);
+            this.downloadSpeedVlbl.TabIndex = 13;
+            this.downloadSpeedVlbl.Text = "Unknown";
+            this.toolTip.SetToolTip(this.downloadSpeedVlbl, "Download Speed from test computer");
+            // 
+            // uploadSpeedlbl
+            // 
+            this.uploadSpeedlbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.uploadSpeedlbl.AutoSize = true;
+            this.uploadSpeedlbl.Location = new System.Drawing.Point(236, 130);
+            this.uploadSpeedlbl.Name = "uploadSpeedlbl";
+            this.uploadSpeedlbl.Size = new System.Drawing.Size(44, 13);
+            this.uploadSpeedlbl.TabIndex = 14;
+            this.uploadSpeedlbl.Text = "Upload:";
+            this.toolTip.SetToolTip(this.uploadSpeedlbl, "Upload speed to test computer");
+            // 
+            // uploadSpeedVlbl
+            // 
+            this.uploadSpeedVlbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.uploadSpeedVlbl.AutoSize = true;
+            this.uploadSpeedVlbl.Location = new System.Drawing.Point(287, 130);
+            this.uploadSpeedVlbl.Name = "uploadSpeedVlbl";
+            this.uploadSpeedVlbl.Size = new System.Drawing.Size(53, 13);
+            this.uploadSpeedVlbl.TabIndex = 15;
+            this.uploadSpeedVlbl.Text = "Unknown";
+            this.toolTip.SetToolTip(this.uploadSpeedVlbl, "Upload speed to test computer");
+            // 
+            // testProgressBar
+            // 
+            this.testProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.testProgressBar.Location = new System.Drawing.Point(225, 165);
+            this.testProgressBar.Name = "testProgressBar";
+            this.testProgressBar.Size = new System.Drawing.Size(167, 21);
+            this.testProgressBar.TabIndex = 16;
+            this.toolTip.SetToolTip(this.testProgressBar, "Test Progress");
+            // 
+            // hostlbl
+            // 
+            this.hostlbl.AutoSize = true;
+            this.hostlbl.Location = new System.Drawing.Point(248, 65);
+            this.hostlbl.Name = "hostlbl";
+            this.hostlbl.Size = new System.Drawing.Size(32, 13);
+            this.hostlbl.TabIndex = 17;
+            this.hostlbl.Text = "Host:";
+            this.toolTip.SetToolTip(this.hostlbl, "Hostname of this computer");
+            // 
+            // hostnamelbl
+            // 
+            this.hostnamelbl.AutoSize = true;
+            this.hostnamelbl.Location = new System.Drawing.Point(287, 65);
+            this.hostnamelbl.Name = "hostnamelbl";
+            this.hostnamelbl.Size = new System.Drawing.Size(53, 13);
+            this.hostnamelbl.TabIndex = 18;
+            this.hostnamelbl.Text = "Unknown";
+            this.toolTip.SetToolTip(this.hostnamelbl, "Hostname of this computer");
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(404, 259);
+            this.Controls.Add(this.hostnamelbl);
+            this.Controls.Add(this.hostlbl);
+            this.Controls.Add(this.testProgressBar);
+            this.Controls.Add(this.uploadSpeedVlbl);
+            this.Controls.Add(this.uploadSpeedlbl);
+            this.Controls.Add(this.downloadSpeedVlbl);
+            this.Controls.Add(this.downloadSpeedlbl);
             this.Controls.Add(this.ipaddr);
             this.Controls.Add(this.ipaddrlbl);
             this.Controls.Add(this.bcastaddr);
@@ -221,5 +316,13 @@
         private System.Windows.Forms.Label bcastaddr;
         private System.Windows.Forms.Label ipaddrlbl;
         private System.Windows.Forms.Label ipaddr;
+        private System.Windows.Forms.Label downloadSpeedlbl;
+        private System.Windows.Forms.Label downloadSpeedVlbl;
+        private System.Windows.Forms.Label uploadSpeedlbl;
+        private System.Windows.Forms.Label uploadSpeedVlbl;
+        private System.Windows.Forms.ProgressBar testProgressBar;
+        private System.Windows.Forms.ToolTip toolTip;
+        private System.Windows.Forms.Label hostlbl;
+        private System.Windows.Forms.Label hostnamelbl;
     }
 }
