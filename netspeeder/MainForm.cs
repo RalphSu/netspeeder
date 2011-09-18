@@ -17,13 +17,15 @@ namespace netspeeder
         Boolean testing = false;
         Int32 elipseNum = 1;
         List<NetData> lnd = new List<NetData>();
+        //Dictionary<String, IPAddress> compsFound = new Dictionary<String, IPAddress>();
+        public BindingList<CompFound> lcf = new BindingList<CompFound>();
         public MainForm()
         {
             InitializeComponent();
         }
         private void MainForm_Load(object sender, EventArgs e)
         {
-            foundListBox.Items.Clear();
+            hostsGrid.Rows.Clear();
             interfaceListBox.Items.Clear();
             //computerFinder.RunWorkerAsync();
             hostnamelbl.Text = Environment.MachineName;
@@ -85,11 +87,6 @@ namespace netspeeder
                 }
             }
         }
-
-        private void computerFinder_ProgressChanged(object sender, ProgressChangedEventArgs e)
-        {
-            foundListBox.Items.Add(e.UserState);
-        }
         public static IPAddress GetBroadcastAddress(IPAddress address, IPAddress subnetMask)
         {
             byte[] ipAdressBytes = address.GetAddressBytes();
@@ -123,6 +120,43 @@ namespace netspeeder
             bcastaddr.Text = lnd[interfaceListBox.SelectedIndex].broadcast.ToString();
             computerFinder.RunWorkerAsync();
             elipseTimer.Enabled = true;
+        }
+
+        private void manualHostAddbtn_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                try
+                {
+                    IPAddress parsed = IPAddress.Parse(manualHostTextBox.Text);
+                    IPHostEntry ihe = Dns.GetHostEntry(parsed);
+                    //compsFound.Add(ihe.HostName, parsed);
+                    lcf.Add(new CompFound()
+                    {
+                        hostname = ihe.HostName,
+                        ip = parsed
+                    });
+                }
+                catch(Exception ex)
+                {
+                    IPAddress[] ip = Dns.GetHostAddresses(manualHostTextBox.Text);
+                    //Int32 i2 = 0;
+                    foreach (IPAddress i in ip)
+                    {
+                        //compsFound.Add(manualHostTextBox.Text + "(" + i2+ ")" , i);
+                        lcf.Add(new CompFound()
+                        {
+                            hostname = manualHostTextBox.Text,
+                            ip = i
+                        });
+                        //i2++;
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error with host or IP", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

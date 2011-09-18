@@ -31,7 +31,6 @@
             this.components = new System.ComponentModel.Container();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.foundListBox = new System.Windows.Forms.ListBox();
             this.startButton = new System.Windows.Forms.Button();
             this.elipseTimer = new System.Windows.Forms.Timer(this.components);
             this.computerFinder = new System.ComponentModel.BackgroundWorker();
@@ -50,6 +49,9 @@
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.hostlbl = new System.Windows.Forms.Label();
             this.hostnamelbl = new System.Windows.Forms.Label();
+            this.manualHostAddbtn = new System.Windows.Forms.Button();
+            this.manualHostTextBox = new System.Windows.Forms.TextBox();
+            this.hostsGrid = new System.Windows.Forms.DataGridView();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -68,25 +70,6 @@
             this.statusLabel.Name = "statusLabel";
             this.statusLabel.Size = new System.Drawing.Size(160, 17);
             this.statusLabel.Text = "Waiting for user information.";
-            // 
-            // foundListBox
-            // 
-            this.foundListBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.foundListBox.FormattingEnabled = true;
-            this.foundListBox.HorizontalScrollbar = true;
-            this.foundListBox.Items.AddRange(new object[] {
-            "1",
-            "2",
-            "3",
-            "4"});
-            this.foundListBox.Location = new System.Drawing.Point(12, 12);
-            this.foundListBox.Name = "foundListBox";
-            this.foundListBox.ScrollAlwaysVisible = true;
-            this.foundListBox.Size = new System.Drawing.Size(207, 212);
-            this.foundListBox.TabIndex = 1;
-            this.foundListBox.SelectedIndexChanged += new System.EventHandler(this.foundListBox_SelectedIndexChanged);
             // 
             // startButton
             // 
@@ -107,10 +90,8 @@
             // 
             // computerFinder
             // 
-            this.computerFinder.WorkerReportsProgress = true;
             this.computerFinder.WorkerSupportsCancellation = true;
             this.computerFinder.DoWork += new System.ComponentModel.DoWorkEventHandler(this.computerFinder_DoWork);
-            this.computerFinder.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.computerFinder_ProgressChanged);
             // 
             // interfaceListBox
             // 
@@ -242,7 +223,7 @@
             // testProgressBar
             // 
             this.testProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.testProgressBar.Location = new System.Drawing.Point(225, 165);
+            this.testProgressBar.Location = new System.Drawing.Point(225, 146);
             this.testProgressBar.Name = "testProgressBar";
             this.testProgressBar.Size = new System.Drawing.Size(167, 21);
             this.testProgressBar.TabIndex = 16;
@@ -250,6 +231,7 @@
             // 
             // hostlbl
             // 
+            this.hostlbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.hostlbl.AutoSize = true;
             this.hostlbl.Location = new System.Drawing.Point(248, 65);
             this.hostlbl.Name = "hostlbl";
@@ -260,6 +242,7 @@
             // 
             // hostnamelbl
             // 
+            this.hostnamelbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.hostnamelbl.AutoSize = true;
             this.hostnamelbl.Location = new System.Drawing.Point(287, 65);
             this.hostnamelbl.Name = "hostnamelbl";
@@ -268,11 +251,46 @@
             this.hostnamelbl.Text = "Unknown";
             this.toolTip.SetToolTip(this.hostnamelbl, "Hostname of this computer");
             // 
+            // manualHostAddbtn
+            // 
+            this.manualHostAddbtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.manualHostAddbtn.Location = new System.Drawing.Point(358, 174);
+            this.manualHostAddbtn.Name = "manualHostAddbtn";
+            this.manualHostAddbtn.Size = new System.Drawing.Size(34, 23);
+            this.manualHostAddbtn.TabIndex = 19;
+            this.manualHostAddbtn.Text = "Add";
+            this.toolTip.SetToolTip(this.manualHostAddbtn, "Manually add host or IP");
+            this.manualHostAddbtn.UseVisualStyleBackColor = true;
+            this.manualHostAddbtn.Click += new System.EventHandler(this.manualHostAddbtn_Click);
+            // 
+            // manualHostTextBox
+            // 
+            this.manualHostTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.manualHostTextBox.Location = new System.Drawing.Point(225, 176);
+            this.manualHostTextBox.Name = "manualHostTextBox";
+            this.manualHostTextBox.Size = new System.Drawing.Size(127, 20);
+            this.manualHostTextBox.TabIndex = 20;
+            this.toolTip.SetToolTip(this.manualHostTextBox, "Manually add host or IP");
+            // 
+            // hostsGrid
+            // 
+            this.hostsGrid.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.hostsGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.hostsGrid.Location = new System.Drawing.Point(12, 12);
+            this.hostsGrid.Name = "hostsGrid";
+            this.hostsGrid.Size = new System.Drawing.Size(207, 222);
+            this.hostsGrid.TabIndex = 21;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(404, 259);
+            this.Controls.Add(this.hostsGrid);
+            this.Controls.Add(this.manualHostTextBox);
+            this.Controls.Add(this.manualHostAddbtn);
             this.Controls.Add(this.hostnamelbl);
             this.Controls.Add(this.hostlbl);
             this.Controls.Add(this.testProgressBar);
@@ -288,7 +306,6 @@
             this.Controls.Add(this.netmasklbl);
             this.Controls.Add(this.interfaceListBox);
             this.Controls.Add(this.startButton);
-            this.Controls.Add(this.foundListBox);
             this.Controls.Add(this.statusStrip);
             this.MinimumSize = new System.Drawing.Size(420, 295);
             this.Name = "MainForm";
@@ -296,6 +313,9 @@
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.statusStrip.ResumeLayout(false);
             this.statusStrip.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.mainFormBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.hostsGrid)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.netDataBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -304,7 +324,6 @@
         #endregion
 
         private System.Windows.Forms.StatusStrip statusStrip;
-        private System.Windows.Forms.ListBox foundListBox;
         private System.Windows.Forms.Button startButton;
         private System.Windows.Forms.ToolStripStatusLabel statusLabel;
         private System.Windows.Forms.Timer elipseTimer;
@@ -324,5 +343,8 @@
         private System.Windows.Forms.ToolTip toolTip;
         private System.Windows.Forms.Label hostlbl;
         private System.Windows.Forms.Label hostnamelbl;
+        private System.Windows.Forms.Button manualHostAddbtn;
+        private System.Windows.Forms.TextBox manualHostTextBox;
+        private System.Windows.Forms.DataGridView hostsGrid;
     }
 }
