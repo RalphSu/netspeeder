@@ -36,6 +36,12 @@
             this.elipseTimer = new System.Windows.Forms.Timer(this.components);
             this.computerFinder = new System.ComponentModel.BackgroundWorker();
             this.interfaceListBox = new System.Windows.Forms.ComboBox();
+            this.netmasklbl = new System.Windows.Forms.Label();
+            this.netmaskaddr = new System.Windows.Forms.Label();
+            this.bcastlbl = new System.Windows.Forms.Label();
+            this.bcastaddr = new System.Windows.Forms.Label();
+            this.ipaddrlbl = new System.Windows.Forms.Label();
+            this.ipaddr = new System.Windows.Forms.Label();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -57,8 +63,9 @@
             // 
             // foundListBox
             // 
-            this.foundListBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)));
+            this.foundListBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.foundListBox.FormattingEnabled = true;
             this.foundListBox.HorizontalScrollbar = true;
             this.foundListBox.Items.AddRange(new object[] {
@@ -113,11 +120,77 @@
             this.interfaceListBox.TabIndex = 3;
             this.interfaceListBox.SelectedIndexChanged += new System.EventHandler(this.interfaceListBox_SelectedIndexChanged);
             // 
+            // netmasklbl
+            // 
+            this.netmasklbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.netmasklbl.AutoSize = true;
+            this.netmasklbl.Location = new System.Drawing.Point(228, 78);
+            this.netmasklbl.Name = "netmasklbl";
+            this.netmasklbl.Size = new System.Drawing.Size(52, 13);
+            this.netmasklbl.TabIndex = 6;
+            this.netmasklbl.Text = "Netmask:";
+            // 
+            // netmaskaddr
+            // 
+            this.netmaskaddr.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.netmaskaddr.AutoSize = true;
+            this.netmaskaddr.Location = new System.Drawing.Point(287, 78);
+            this.netmaskaddr.Name = "netmaskaddr";
+            this.netmaskaddr.Size = new System.Drawing.Size(53, 13);
+            this.netmaskaddr.TabIndex = 7;
+            this.netmaskaddr.Text = "Unknown";
+            // 
+            // bcastlbl
+            // 
+            this.bcastlbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.bcastlbl.AutoSize = true;
+            this.bcastlbl.Location = new System.Drawing.Point(222, 91);
+            this.bcastlbl.Name = "bcastlbl";
+            this.bcastlbl.Size = new System.Drawing.Size(58, 13);
+            this.bcastlbl.TabIndex = 8;
+            this.bcastlbl.Text = "Broadcast:";
+            // 
+            // bcastaddr
+            // 
+            this.bcastaddr.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.bcastaddr.AutoSize = true;
+            this.bcastaddr.Location = new System.Drawing.Point(287, 91);
+            this.bcastaddr.Name = "bcastaddr";
+            this.bcastaddr.Size = new System.Drawing.Size(53, 13);
+            this.bcastaddr.TabIndex = 9;
+            this.bcastaddr.Text = "Unknown";
+            // 
+            // ipaddrlbl
+            // 
+            this.ipaddrlbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.ipaddrlbl.AutoSize = true;
+            this.ipaddrlbl.Location = new System.Drawing.Point(235, 65);
+            this.ipaddrlbl.Name = "ipaddrlbl";
+            this.ipaddrlbl.Size = new System.Drawing.Size(45, 13);
+            this.ipaddrlbl.TabIndex = 10;
+            this.ipaddrlbl.Text = "IP Addr:";
+            // 
+            // ipaddr
+            // 
+            this.ipaddr.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.ipaddr.AutoSize = true;
+            this.ipaddr.Location = new System.Drawing.Point(287, 65);
+            this.ipaddr.Name = "ipaddr";
+            this.ipaddr.Size = new System.Drawing.Size(53, 13);
+            this.ipaddr.TabIndex = 11;
+            this.ipaddr.Text = "Unknown";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(404, 259);
+            this.Controls.Add(this.ipaddr);
+            this.Controls.Add(this.ipaddrlbl);
+            this.Controls.Add(this.bcastaddr);
+            this.Controls.Add(this.bcastlbl);
+            this.Controls.Add(this.netmaskaddr);
+            this.Controls.Add(this.netmasklbl);
             this.Controls.Add(this.interfaceListBox);
             this.Controls.Add(this.startButton);
             this.Controls.Add(this.foundListBox);
@@ -142,5 +215,11 @@
         private System.Windows.Forms.Timer elipseTimer;
         private System.ComponentModel.BackgroundWorker computerFinder;
         private System.Windows.Forms.ComboBox interfaceListBox;
+        private System.Windows.Forms.Label netmasklbl;
+        private System.Windows.Forms.Label netmaskaddr;
+        private System.Windows.Forms.Label bcastlbl;
+        private System.Windows.Forms.Label bcastaddr;
+        private System.Windows.Forms.Label ipaddrlbl;
+        private System.Windows.Forms.Label ipaddr;
     }
 }

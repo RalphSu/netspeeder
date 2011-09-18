@@ -45,7 +45,10 @@ namespace netspeeder
                         {
                             netiface = ni,
                             ip = ni.GetIPProperties().UnicastAddresses[i].Address,
-                            netmask = ni.GetIPProperties().UnicastAddresses[i].IPv4Mask
+                            netmask = ni.GetIPProperties().UnicastAddresses[i].IPv4Mask,
+                            broadcast = GetBroadcastAddress(
+                                ni.GetIPProperties().UnicastAddresses[i].Address, 
+                                ni.GetIPProperties().UnicastAddresses[i].IPv4Mask)
                         });
                     }
                 }
@@ -76,8 +79,7 @@ namespace netspeeder
             {
                 foreach (NetData nd in lnd)
                 {
-                    IPAddress f = GetBroadcastAddress(nd.ip, nd.netmask);
-                    computerFinder.ReportProgress(-1, System.Environment.MachineName + "(" + nd.ip.ToString() + ")");
+                    //computerFinder.ReportProgress(-1, System.Environment.MachineName + "(" + nd.ip.ToString() + ")");
                     System.Threading.Thread.Sleep(100);
                 }
             }
@@ -115,7 +117,9 @@ namespace netspeeder
 
         private void interfaceListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            //MessageBox.Show(lnd[interfaceListBox.SelectedIndex].netmask.ToString());
+            ipaddr.Text = lnd[interfaceListBox.SelectedIndex].ip.ToString();
+            netmaskaddr.Text = lnd[interfaceListBox.SelectedIndex].netmask.ToString();
+            bcastaddr.Text = lnd[interfaceListBox.SelectedIndex].broadcast.ToString();
             computerFinder.RunWorkerAsync();
             elipseTimer.Enabled = true;
         }

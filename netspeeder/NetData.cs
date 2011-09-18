@@ -12,5 +12,6 @@ namespace netspeeder
         public NetworkInterface netiface;
         public IPAddress ip;
         public IPAddress netmask;
+        public IPAddress broadcast;
     }
 }
