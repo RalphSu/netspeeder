@@ -5,12 +5,29 @@ using System.ComponentModel;
 
 namespace netspeeder
 {
-    class CompFound : INotifyPropertyChanged
+    public class CompFound : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
-
-        public String hostname;
-        public IPAddress ip;
+        private String _hostname;
+        private String _ip;
+        public String hostname
+        {
+            get { return _hostname; }
+            set
+            {
+                _hostname = value;
+                this.NotifyPropertyChanged("hostname");
+            }
+        }
+        public String ip
+        {
+            get { return _ip; }
+            set
+            {
+                _ip = value;
+                this.NotifyPropertyChanged("ip");
+            }
+        }
 
         private void NotifyPropertyChanged(String name)
         {

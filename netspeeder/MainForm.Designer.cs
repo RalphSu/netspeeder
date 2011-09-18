@@ -52,7 +52,10 @@
             this.manualHostAddbtn = new System.Windows.Forms.Button();
             this.manualHostTextBox = new System.Windows.Forms.TextBox();
             this.hostsGrid = new System.Windows.Forms.DataGridView();
+            this.manualAddLookup = new System.ComponentModel.BackgroundWorker();
+            this.lookupBar = new System.Windows.Forms.ProgressBar();
             this.statusStrip.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.hostsGrid)).BeginInit();
             this.SuspendLayout();
             // 
             // statusStrip
@@ -61,7 +64,7 @@
             this.statusLabel});
             this.statusStrip.Location = new System.Drawing.Point(0, 237);
             this.statusStrip.Name = "statusStrip";
-            this.statusStrip.Size = new System.Drawing.Size(404, 22);
+            this.statusStrip.Size = new System.Drawing.Size(424, 22);
             this.statusStrip.TabIndex = 0;
             this.statusStrip.Text = "statusStrip1";
             // 
@@ -75,7 +78,7 @@
             // 
             this.startButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.startButton.Enabled = false;
-            this.startButton.Location = new System.Drawing.Point(225, 12);
+            this.startButton.Location = new System.Drawing.Point(245, 12);
             this.startButton.Name = "startButton";
             this.startButton.Size = new System.Drawing.Size(167, 23);
             this.startButton.TabIndex = 2;
@@ -103,7 +106,7 @@
             "2",
             "3",
             "4"});
-            this.interfaceListBox.Location = new System.Drawing.Point(225, 41);
+            this.interfaceListBox.Location = new System.Drawing.Point(245, 41);
             this.interfaceListBox.Name = "interfaceListBox";
             this.interfaceListBox.Size = new System.Drawing.Size(167, 21);
             this.interfaceListBox.TabIndex = 3;
@@ -114,7 +117,7 @@
             // 
             this.netmasklbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.netmasklbl.AutoSize = true;
-            this.netmasklbl.Location = new System.Drawing.Point(228, 91);
+            this.netmasklbl.Location = new System.Drawing.Point(248, 91);
             this.netmasklbl.Name = "netmasklbl";
             this.netmasklbl.Size = new System.Drawing.Size(52, 13);
             this.netmasklbl.TabIndex = 6;
@@ -125,7 +128,7 @@
             // 
             this.netmaskaddr.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.netmaskaddr.AutoSize = true;
-            this.netmaskaddr.Location = new System.Drawing.Point(287, 91);
+            this.netmaskaddr.Location = new System.Drawing.Point(307, 91);
             this.netmaskaddr.Name = "netmaskaddr";
             this.netmaskaddr.Size = new System.Drawing.Size(53, 13);
             this.netmaskaddr.TabIndex = 7;
@@ -136,7 +139,7 @@
             // 
             this.bcastlbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.bcastlbl.AutoSize = true;
-            this.bcastlbl.Location = new System.Drawing.Point(222, 104);
+            this.bcastlbl.Location = new System.Drawing.Point(242, 104);
             this.bcastlbl.Name = "bcastlbl";
             this.bcastlbl.Size = new System.Drawing.Size(58, 13);
             this.bcastlbl.TabIndex = 8;
@@ -147,7 +150,7 @@
             // 
             this.bcastaddr.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.bcastaddr.AutoSize = true;
-            this.bcastaddr.Location = new System.Drawing.Point(287, 104);
+            this.bcastaddr.Location = new System.Drawing.Point(307, 104);
             this.bcastaddr.Name = "bcastaddr";
             this.bcastaddr.Size = new System.Drawing.Size(53, 13);
             this.bcastaddr.TabIndex = 9;
@@ -158,7 +161,7 @@
             // 
             this.ipaddrlbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.ipaddrlbl.AutoSize = true;
-            this.ipaddrlbl.Location = new System.Drawing.Point(235, 78);
+            this.ipaddrlbl.Location = new System.Drawing.Point(255, 78);
             this.ipaddrlbl.Name = "ipaddrlbl";
             this.ipaddrlbl.Size = new System.Drawing.Size(45, 13);
             this.ipaddrlbl.TabIndex = 10;
@@ -169,7 +172,7 @@
             // 
             this.ipaddr.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.ipaddr.AutoSize = true;
-            this.ipaddr.Location = new System.Drawing.Point(287, 78);
+            this.ipaddr.Location = new System.Drawing.Point(307, 78);
             this.ipaddr.Name = "ipaddr";
             this.ipaddr.Size = new System.Drawing.Size(53, 13);
             this.ipaddr.TabIndex = 11;
@@ -180,7 +183,7 @@
             // 
             this.downloadSpeedlbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.downloadSpeedlbl.AutoSize = true;
-            this.downloadSpeedlbl.Location = new System.Drawing.Point(222, 117);
+            this.downloadSpeedlbl.Location = new System.Drawing.Point(242, 117);
             this.downloadSpeedlbl.Name = "downloadSpeedlbl";
             this.downloadSpeedlbl.Size = new System.Drawing.Size(58, 13);
             this.downloadSpeedlbl.TabIndex = 12;
@@ -191,7 +194,7 @@
             // 
             this.downloadSpeedVlbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.downloadSpeedVlbl.AutoSize = true;
-            this.downloadSpeedVlbl.Location = new System.Drawing.Point(287, 117);
+            this.downloadSpeedVlbl.Location = new System.Drawing.Point(307, 117);
             this.downloadSpeedVlbl.Name = "downloadSpeedVlbl";
             this.downloadSpeedVlbl.Size = new System.Drawing.Size(53, 13);
             this.downloadSpeedVlbl.TabIndex = 13;
@@ -202,7 +205,7 @@
             // 
             this.uploadSpeedlbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.uploadSpeedlbl.AutoSize = true;
-            this.uploadSpeedlbl.Location = new System.Drawing.Point(236, 130);
+            this.uploadSpeedlbl.Location = new System.Drawing.Point(256, 130);
             this.uploadSpeedlbl.Name = "uploadSpeedlbl";
             this.uploadSpeedlbl.Size = new System.Drawing.Size(44, 13);
             this.uploadSpeedlbl.TabIndex = 14;
@@ -213,7 +216,7 @@
             // 
             this.uploadSpeedVlbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.uploadSpeedVlbl.AutoSize = true;
-            this.uploadSpeedVlbl.Location = new System.Drawing.Point(287, 130);
+            this.uploadSpeedVlbl.Location = new System.Drawing.Point(307, 130);
             this.uploadSpeedVlbl.Name = "uploadSpeedVlbl";
             this.uploadSpeedVlbl.Size = new System.Drawing.Size(53, 13);
             this.uploadSpeedVlbl.TabIndex = 15;
@@ -223,7 +226,7 @@
             // testProgressBar
             // 
             this.testProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.testProgressBar.Location = new System.Drawing.Point(225, 146);
+            this.testProgressBar.Location = new System.Drawing.Point(245, 146);
             this.testProgressBar.Name = "testProgressBar";
             this.testProgressBar.Size = new System.Drawing.Size(167, 21);
             this.testProgressBar.TabIndex = 16;
@@ -233,7 +236,7 @@
             // 
             this.hostlbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.hostlbl.AutoSize = true;
-            this.hostlbl.Location = new System.Drawing.Point(248, 65);
+            this.hostlbl.Location = new System.Drawing.Point(268, 65);
             this.hostlbl.Name = "hostlbl";
             this.hostlbl.Size = new System.Drawing.Size(32, 13);
             this.hostlbl.TabIndex = 17;
@@ -244,7 +247,7 @@
             // 
             this.hostnamelbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.hostnamelbl.AutoSize = true;
-            this.hostnamelbl.Location = new System.Drawing.Point(287, 65);
+            this.hostnamelbl.Location = new System.Drawing.Point(307, 65);
             this.hostnamelbl.Name = "hostnamelbl";
             this.hostnamelbl.Size = new System.Drawing.Size(53, 13);
             this.hostnamelbl.TabIndex = 18;
@@ -254,7 +257,7 @@
             // manualHostAddbtn
             // 
             this.manualHostAddbtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.manualHostAddbtn.Location = new System.Drawing.Point(358, 174);
+            this.manualHostAddbtn.Location = new System.Drawing.Point(378, 174);
             this.manualHostAddbtn.Name = "manualHostAddbtn";
             this.manualHostAddbtn.Size = new System.Drawing.Size(34, 23);
             this.manualHostAddbtn.TabIndex = 19;
@@ -266,7 +269,7 @@
             // manualHostTextBox
             // 
             this.manualHostTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.manualHostTextBox.Location = new System.Drawing.Point(225, 176);
+            this.manualHostTextBox.Location = new System.Drawing.Point(245, 176);
             this.manualHostTextBox.Name = "manualHostTextBox";
             this.manualHostTextBox.Size = new System.Drawing.Size(127, 20);
             this.manualHostTextBox.TabIndex = 20;
@@ -280,14 +283,28 @@
             this.hostsGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.hostsGrid.Location = new System.Drawing.Point(12, 12);
             this.hostsGrid.Name = "hostsGrid";
-            this.hostsGrid.Size = new System.Drawing.Size(207, 222);
+            this.hostsGrid.Size = new System.Drawing.Size(227, 222);
             this.hostsGrid.TabIndex = 21;
+            // 
+            // manualAddLookup
+            // 
+            this.manualAddLookup.DoWork += new System.ComponentModel.DoWorkEventHandler(this.manualAddLookup_DoWork);
+            this.manualAddLookup.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.manualAddLookup_RunWorkerCompleted);
+            // 
+            // lookupBar
+            // 
+            this.lookupBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lookupBar.Location = new System.Drawing.Point(245, 202);
+            this.lookupBar.Name = "lookupBar";
+            this.lookupBar.Size = new System.Drawing.Size(167, 10);
+            this.lookupBar.TabIndex = 22;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(404, 259);
+            this.ClientSize = new System.Drawing.Size(424, 259);
+            this.Controls.Add(this.lookupBar);
             this.Controls.Add(this.hostsGrid);
             this.Controls.Add(this.manualHostTextBox);
             this.Controls.Add(this.manualHostAddbtn);
@@ -307,15 +324,13 @@
             this.Controls.Add(this.interfaceListBox);
             this.Controls.Add(this.startButton);
             this.Controls.Add(this.statusStrip);
-            this.MinimumSize = new System.Drawing.Size(420, 295);
+            this.MinimumSize = new System.Drawing.Size(440, 295);
             this.Name = "MainForm";
             this.Text = "LAN Speed Test";
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.statusStrip.ResumeLayout(false);
             this.statusStrip.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.mainFormBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.hostsGrid)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.netDataBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -346,5 +361,7 @@
         private System.Windows.Forms.Button manualHostAddbtn;
         private System.Windows.Forms.TextBox manualHostTextBox;
         private System.Windows.Forms.DataGridView hostsGrid;
+        private System.ComponentModel.BackgroundWorker manualAddLookup;
+        private System.Windows.Forms.ProgressBar lookupBar;
     }
 }

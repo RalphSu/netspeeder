@@ -27,6 +27,21 @@ namespace netspeeder
         {
             hostsGrid.Rows.Clear();
             interfaceListBox.Items.Clear();
+            hostsGrid.Columns.Add(new DataGridViewTextBoxColumn()
+            {
+                DataPropertyName = "hostname",
+                AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells,
+                ReadOnly = true,
+                HeaderText = "Host Name"
+            });
+            hostsGrid.Columns.Add(new DataGridViewTextBoxColumn()
+            {
+                DataPropertyName = "ip",
+                AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells,
+                ReadOnly = true,
+                HeaderText = "IP Address"
+            });
+            hostsGrid.DataSource = lcf;
             //computerFinder.RunWorkerAsync();
             hostnamelbl.Text = Environment.MachineName;
             List<NetworkInterface> lni = new List<NetworkInterface>();
@@ -124,6 +139,13 @@ namespace netspeeder
 
         private void manualHostAddbtn_Click(object sender, EventArgs e)
         {
+            lookupBar.Style = ProgressBarStyle.Marquee;
+            manualAddLookup.RunWorkerAsync();
+        }
+
+        private void manualAddLookup_DoWork(object sender, DoWorkEventArgs e)
+        {
+            List<CompFound> lcfl = new List<CompFound>();
             try
             {
                 try
@@ -131,31 +153,46 @@ namespace netspeeder
                     IPAddress parsed = IPAddress.Parse(manualHostTextBox.Text);
                     IPHostEntry ihe = Dns.GetHostEntry(parsed);
                     //compsFound.Add(ihe.HostName, parsed);
-                    lcf.Add(new CompFound()
+                    lcfl.Add(new CompFound()
                     {
                         hostname = ihe.HostName,
-                        ip = parsed
+                        ip = parsed.ToString()
                     });
+                    System.Diagnostics.Debug.WriteLine("IP");
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     IPAddress[] ip = Dns.GetHostAddresses(manualHostTextBox.Text);
                     //Int32 i2 = 0;
                     foreach (IPAddress i in ip)
                     {
                         //compsFound.Add(manualHostTextBox.Text + "(" + i2+ ")" , i);
-                        lcf.Add(new CompFound()
+                        lcfl.Add(new CompFound()
                         {
                             hostname = manualHostTextBox.Text,
-                            ip = i
+                            ip = i.ToString()
                         });
                         //i2++;
                     }
+                    System.Diagnostics.Debug.WriteLine("Host");
                 }
+                e.Result = lcfl;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error with host or IP", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void manualAddLookup_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            lookupBar.Style = ProgressBarStyle.Blocks;
+            if (e.Result is List<CompFound>)
+            {
+                foreach(CompFound cf in e.Result as List<CompFound>)
+                {
+                    lcf.Add(cf);
+                }
             }
         }
     }
