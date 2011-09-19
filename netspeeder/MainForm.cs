@@ -30,6 +30,7 @@ namespace netspeeder
             interfaceListBox.Items.Clear();
             hostsGrid.Columns.Add(new DataGridViewTextBoxColumn()
             {
+                Name = "hname",
                 DataPropertyName = "hostname",
                 AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells,
                 ReadOnly = true,
@@ -37,6 +38,7 @@ namespace netspeeder
             });
             hostsGrid.Columns.Add(new DataGridViewTextBoxColumn()
             {
+                Name = "ipaddr",
                 DataPropertyName = "ip",
                 AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells,
                 ReadOnly = true,
@@ -119,14 +121,11 @@ namespace netspeeder
             return new IPAddress(broadcastAddress);
         }
 
-        private void foundListBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            startButton.Enabled = true;
-        }
-
         private void startButton_Click(object sender, EventArgs e)
         {
             computerFinder.CancelAsync();
+            IPAddress ip = IPAddress.Parse(hostsGrid.SelectedRows[0].Cells["ipaddr"].Value as String);
+            MessageBox.Show(ip.ToString());
         }
 
         private void interfaceListBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -197,6 +196,19 @@ namespace netspeeder
                 {
                     lcf.Add(cf);
                 }
+            }
+        }
+
+        private void hostsGrid_RowEnter(object sender, DataGridViewCellEventArgs e)
+        {
+            startButton.Enabled = true;
+        }
+
+        private void manualHostTextBox_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Return)
+            {
+                manualHostAddbtn.PerformClick();
             }
         }
     }

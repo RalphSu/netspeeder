@@ -54,6 +54,7 @@
             this.hostsGrid = new System.Windows.Forms.DataGridView();
             this.manualAddLookup = new System.ComponentModel.BackgroundWorker();
             this.lookupBar = new System.Windows.Forms.ProgressBar();
+            this.shutupbutton = new System.Windows.Forms.Button();
             this.statusStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.hostsGrid)).BeginInit();
             this.SuspendLayout();
@@ -274,17 +275,26 @@
             this.manualHostTextBox.Size = new System.Drawing.Size(127, 20);
             this.manualHostTextBox.TabIndex = 20;
             this.toolTip.SetToolTip(this.manualHostTextBox, "Manually add host or IP");
+            this.manualHostTextBox.KeyUp += new System.Windows.Forms.KeyEventHandler(this.manualHostTextBox_KeyUp);
             // 
             // hostsGrid
             // 
+            this.hostsGrid.AllowUserToAddRows = false;
+            this.hostsGrid.AllowUserToDeleteRows = false;
+            this.hostsGrid.AllowUserToResizeRows = false;
             this.hostsGrid.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.hostsGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.hostsGrid.Location = new System.Drawing.Point(12, 12);
+            this.hostsGrid.MultiSelect = false;
             this.hostsGrid.Name = "hostsGrid";
+            this.hostsGrid.ReadOnly = true;
+            this.hostsGrid.RowHeadersVisible = false;
+            this.hostsGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.hostsGrid.Size = new System.Drawing.Size(227, 222);
             this.hostsGrid.TabIndex = 21;
+            this.hostsGrid.RowEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.hostsGrid_RowEnter);
             // 
             // manualAddLookup
             // 
@@ -298,9 +308,21 @@
             this.lookupBar.Name = "lookupBar";
             this.lookupBar.Size = new System.Drawing.Size(167, 10);
             this.lookupBar.TabIndex = 22;
+            this.toolTip.SetToolTip(this.lookupBar, "Lookup Progress");
+            // 
+            // shutupbutton
+            // 
+            this.shutupbutton.Location = new System.Drawing.Point(24, 56);
+            this.shutupbutton.Name = "shutupbutton";
+            this.shutupbutton.Size = new System.Drawing.Size(75, 57);
+            this.shutupbutton.TabIndex = 23;
+            this.shutupbutton.Text = "Make the form shut up when enter is pressed";
+            this.shutupbutton.UseVisualStyleBackColor = true;
+            this.shutupbutton.Visible = false;
             // 
             // MainForm
             // 
+            this.AcceptButton = this.shutupbutton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(424, 259);
@@ -324,6 +346,7 @@
             this.Controls.Add(this.interfaceListBox);
             this.Controls.Add(this.startButton);
             this.Controls.Add(this.statusStrip);
+            this.Controls.Add(this.shutupbutton);
             this.MinimumSize = new System.Drawing.Size(440, 295);
             this.Name = "MainForm";
             this.Text = "LAN Speed Test";
@@ -363,5 +386,6 @@
         private System.Windows.Forms.DataGridView hostsGrid;
         private System.ComponentModel.BackgroundWorker manualAddLookup;
         private System.Windows.Forms.ProgressBar lookupBar;
+        private System.Windows.Forms.Button shutupbutton;
     }
 }
