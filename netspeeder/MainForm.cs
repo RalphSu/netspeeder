@@ -25,6 +25,7 @@ namespace netspeeder
         }
         private void MainForm_Load(object sender, EventArgs e)
         {
+            this.Icon = Properties.Resources.icon_32;
             hostsGrid.Rows.Clear();
             interfaceListBox.Items.Clear();
             hostsGrid.Columns.Add(new DataGridViewTextBoxColumn()
@@ -166,12 +167,15 @@ namespace netspeeder
                     //Int32 i2 = 0;
                     foreach (IPAddress i in ip)
                     {
-                        //compsFound.Add(manualHostTextBox.Text + "(" + i2+ ")" , i);
-                        lcfl.Add(new CompFound()
+                        if (i.AddressFamily == AddressFamily.InterNetwork)
                         {
-                            hostname = manualHostTextBox.Text,
-                            ip = i.ToString()
-                        });
+                            //compsFound.Add(manualHostTextBox.Text + "(" + i2+ ")" , i);
+                            lcfl.Add(new CompFound()
+                            {
+                                hostname = manualHostTextBox.Text,
+                                ip = i.ToString()
+                            });
+                        }
                         //i2++;
                     }
                     System.Diagnostics.Debug.WriteLine("Host");
