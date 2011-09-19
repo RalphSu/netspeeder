@@ -96,13 +96,53 @@ namespace netspeeder
 
         private void computerFinder_DoWork(object sender, DoWorkEventArgs e)
         {
-            if (!computerFinder.CancellationPending)
+            Socket sock = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+            NetData given = e.Argument as NetData;
+            IPEndPoint ipep = new IPEndPoint(given.broadcast, 7829);
+            Byte[] data = Encoding.UTF8.GetBytes("LST:" + Environment.MachineName + "," + given.ip.ToString() + "\n");
+            sock.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Broadcast, true);
+            while (!computerFinder.CancellationPending)
             {
-                foreach (NetData nd in lnd)
+                sock.SendTo(data, ipep);
+                System.Threading.Thread.Sleep(500);
+            }
+            computerFinderListener.CancelAsync();
+            sock.Close();
+        }
+        private void computerFinderListener_DoWork(object sender, DoWorkEventArgs e)
+        {
+            Socket sockl = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+            IPEndPoint ipepl = new IPEndPoint(IPAddress.Any, 7829);
+            sockl.Bind(ipepl);
+            EndPoint ep = ipepl as EndPoint;
+            Byte[] recv = new Byte[1024];
+            sockl.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveTimeout, 1000);
+            while (!computerFinderListener.CancellationPending)
+            {
+                try
                 {
-                    //computerFinder.ReportProgress(-1, System.Environment.MachineName + "(" + nd.ip.ToString() + ")");
-                    System.Threading.Thread.Sleep(100);
+                    recv = new Byte[1024];
+                    sockl.ReceiveFrom(recv, ref ep);
+                    String[] recvl = Encoding.UTF8.GetString(recv).Substring(4).TrimEnd('\0').Split(',');
+                    computerFinderListener.ReportProgress(-1, new CompFound()
+                    {
+                        hostname = recvl[0],
+                        ip = recvl[1]
+                    });
                 }
+                catch (Exception)
+                {
+                    //do nothing, timeout is only thing that can throw an exception anyway
+                }
+            }
+            sockl.Close();
+        }
+        private void computerFinderListener_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            CompFound c = e.UserState as CompFound;
+            if (c.hostname != Environment.MachineName)
+            {
+                lcf.Add(c);
             }
         }
         public static IPAddress GetBroadcastAddress(IPAddress address, IPAddress subnetMask)
@@ -130,17 +170,17 @@ namespace netspeeder
 
         private void interfaceListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ipaddr.Text = lnd[interfaceListBox.SelectedIndex].ip.ToString();
-            netmaskaddr.Text = lnd[interfaceListBox.SelectedIndex].netmask.ToString();
-            bcastaddr.Text = lnd[interfaceListBox.SelectedIndex].broadcast.ToString();
-            computerFinder.RunWorkerAsync();
-            elipseTimer.Enabled = true;
+            searchButton.Enabled = true;
+            searchButton.PerformClick();
         }
 
         private void manualHostAddbtn_Click(object sender, EventArgs e)
         {
-            lookupBar.Style = ProgressBarStyle.Marquee;
-            manualAddLookup.RunWorkerAsync();
+            if (manualHostTextBox.Text != String.Empty)
+            {
+                lookupBar.Style = ProgressBarStyle.Marquee;
+                manualAddLookup.RunWorkerAsync();
+            }
         }
 
         private void manualAddLookup_DoWork(object sender, DoWorkEventArgs e)
@@ -210,6 +250,45 @@ namespace netspeeder
             {
                 manualHostAddbtn.PerformClick();
             }
+        }
+
+        private void computerFinder_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            elipseTimer.Enabled = false;
+            statusLabel.Text = "Done searching.";
+            searchButton.Text = "Start search";
+        }
+
+        private void searchButton_Click(object sender, EventArgs e)
+        {
+            if (!computerFinder.IsBusy)
+            {
+                ipaddr.Text = lnd[interfaceListBox.SelectedIndex].ip.ToString();
+                netmaskaddr.Text = lnd[interfaceListBox.SelectedIndex].netmask.ToString();
+                bcastaddr.Text = lnd[interfaceListBox.SelectedIndex].broadcast.ToString();
+                computerFinder.RunWorkerAsync(lnd[interfaceListBox.SelectedIndex]);
+                computerFinderListener.RunWorkerAsync();
+                elipseTimer.Enabled = true;
+                searchButton.Text = "Stop search";
+            }
+            else
+            {
+                computerFinder.CancelAsync();
+                searchTimer.Enabled = true;
+                searchButton.Enabled = false;
+            }
+        }
+
+        private void toolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            startButton.Enabled = false;
+            hostsGrid.Rows.Clear();
+        }
+
+        private void searchTimer_Tick(object sender, EventArgs e)
+        {
+            searchButton.Enabled = true;
+            searchTimer.Enabled = false;
         }
     }
 }

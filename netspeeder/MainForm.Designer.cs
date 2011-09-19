@@ -51,12 +51,18 @@
             this.hostnamelbl = new System.Windows.Forms.Label();
             this.manualHostAddbtn = new System.Windows.Forms.Button();
             this.manualHostTextBox = new System.Windows.Forms.TextBox();
+            this.lookupBar = new System.Windows.Forms.ProgressBar();
             this.hostsGrid = new System.Windows.Forms.DataGridView();
             this.manualAddLookup = new System.ComponentModel.BackgroundWorker();
-            this.lookupBar = new System.Windows.Forms.ProgressBar();
             this.shutupbutton = new System.Windows.Forms.Button();
+            this.searchButton = new System.Windows.Forms.Button();
+            this.computerFinderListener = new System.ComponentModel.BackgroundWorker();
+            this.hostsGridMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.searchTimer = new System.Windows.Forms.Timer(this.components);
             this.statusStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.hostsGrid)).BeginInit();
+            this.hostsGridMenu.SuspendLayout();
             this.SuspendLayout();
             // 
             // statusStrip
@@ -81,9 +87,10 @@
             this.startButton.Enabled = false;
             this.startButton.Location = new System.Drawing.Point(245, 12);
             this.startButton.Name = "startButton";
-            this.startButton.Size = new System.Drawing.Size(167, 23);
+            this.startButton.Size = new System.Drawing.Size(80, 23);
             this.startButton.TabIndex = 2;
-            this.startButton.Text = "Start test with selection";
+            this.startButton.Text = "Start test";
+            this.toolTip.SetToolTip(this.startButton, "Using the current selection");
             this.startButton.UseVisualStyleBackColor = true;
             this.startButton.Click += new System.EventHandler(this.startButton_Click);
             // 
@@ -96,6 +103,7 @@
             // 
             this.computerFinder.WorkerSupportsCancellation = true;
             this.computerFinder.DoWork += new System.ComponentModel.DoWorkEventHandler(this.computerFinder_DoWork);
+            this.computerFinder.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.computerFinder_RunWorkerCompleted);
             // 
             // interfaceListBox
             // 
@@ -118,7 +126,7 @@
             // 
             this.netmasklbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.netmasklbl.AutoSize = true;
-            this.netmasklbl.Location = new System.Drawing.Point(248, 91);
+            this.netmasklbl.Location = new System.Drawing.Point(248, 96);
             this.netmasklbl.Name = "netmasklbl";
             this.netmasklbl.Size = new System.Drawing.Size(52, 13);
             this.netmasklbl.TabIndex = 6;
@@ -129,7 +137,7 @@
             // 
             this.netmaskaddr.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.netmaskaddr.AutoSize = true;
-            this.netmaskaddr.Location = new System.Drawing.Point(307, 91);
+            this.netmaskaddr.Location = new System.Drawing.Point(307, 96);
             this.netmaskaddr.Name = "netmaskaddr";
             this.netmaskaddr.Size = new System.Drawing.Size(53, 13);
             this.netmaskaddr.TabIndex = 7;
@@ -140,7 +148,7 @@
             // 
             this.bcastlbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.bcastlbl.AutoSize = true;
-            this.bcastlbl.Location = new System.Drawing.Point(242, 104);
+            this.bcastlbl.Location = new System.Drawing.Point(242, 109);
             this.bcastlbl.Name = "bcastlbl";
             this.bcastlbl.Size = new System.Drawing.Size(58, 13);
             this.bcastlbl.TabIndex = 8;
@@ -151,7 +159,7 @@
             // 
             this.bcastaddr.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.bcastaddr.AutoSize = true;
-            this.bcastaddr.Location = new System.Drawing.Point(307, 104);
+            this.bcastaddr.Location = new System.Drawing.Point(307, 109);
             this.bcastaddr.Name = "bcastaddr";
             this.bcastaddr.Size = new System.Drawing.Size(53, 13);
             this.bcastaddr.TabIndex = 9;
@@ -162,7 +170,7 @@
             // 
             this.ipaddrlbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.ipaddrlbl.AutoSize = true;
-            this.ipaddrlbl.Location = new System.Drawing.Point(255, 78);
+            this.ipaddrlbl.Location = new System.Drawing.Point(255, 83);
             this.ipaddrlbl.Name = "ipaddrlbl";
             this.ipaddrlbl.Size = new System.Drawing.Size(45, 13);
             this.ipaddrlbl.TabIndex = 10;
@@ -173,7 +181,7 @@
             // 
             this.ipaddr.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.ipaddr.AutoSize = true;
-            this.ipaddr.Location = new System.Drawing.Point(307, 78);
+            this.ipaddr.Location = new System.Drawing.Point(307, 83);
             this.ipaddr.Name = "ipaddr";
             this.ipaddr.Size = new System.Drawing.Size(53, 13);
             this.ipaddr.TabIndex = 11;
@@ -184,7 +192,7 @@
             // 
             this.downloadSpeedlbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.downloadSpeedlbl.AutoSize = true;
-            this.downloadSpeedlbl.Location = new System.Drawing.Point(242, 117);
+            this.downloadSpeedlbl.Location = new System.Drawing.Point(242, 122);
             this.downloadSpeedlbl.Name = "downloadSpeedlbl";
             this.downloadSpeedlbl.Size = new System.Drawing.Size(58, 13);
             this.downloadSpeedlbl.TabIndex = 12;
@@ -195,7 +203,7 @@
             // 
             this.downloadSpeedVlbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.downloadSpeedVlbl.AutoSize = true;
-            this.downloadSpeedVlbl.Location = new System.Drawing.Point(307, 117);
+            this.downloadSpeedVlbl.Location = new System.Drawing.Point(307, 122);
             this.downloadSpeedVlbl.Name = "downloadSpeedVlbl";
             this.downloadSpeedVlbl.Size = new System.Drawing.Size(53, 13);
             this.downloadSpeedVlbl.TabIndex = 13;
@@ -206,7 +214,7 @@
             // 
             this.uploadSpeedlbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.uploadSpeedlbl.AutoSize = true;
-            this.uploadSpeedlbl.Location = new System.Drawing.Point(256, 130);
+            this.uploadSpeedlbl.Location = new System.Drawing.Point(256, 135);
             this.uploadSpeedlbl.Name = "uploadSpeedlbl";
             this.uploadSpeedlbl.Size = new System.Drawing.Size(44, 13);
             this.uploadSpeedlbl.TabIndex = 14;
@@ -217,7 +225,7 @@
             // 
             this.uploadSpeedVlbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.uploadSpeedVlbl.AutoSize = true;
-            this.uploadSpeedVlbl.Location = new System.Drawing.Point(307, 130);
+            this.uploadSpeedVlbl.Location = new System.Drawing.Point(307, 135);
             this.uploadSpeedVlbl.Name = "uploadSpeedVlbl";
             this.uploadSpeedVlbl.Size = new System.Drawing.Size(53, 13);
             this.uploadSpeedVlbl.TabIndex = 15;
@@ -227,7 +235,7 @@
             // testProgressBar
             // 
             this.testProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.testProgressBar.Location = new System.Drawing.Point(245, 146);
+            this.testProgressBar.Location = new System.Drawing.Point(245, 151);
             this.testProgressBar.Name = "testProgressBar";
             this.testProgressBar.Size = new System.Drawing.Size(167, 21);
             this.testProgressBar.TabIndex = 16;
@@ -237,7 +245,7 @@
             // 
             this.hostlbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.hostlbl.AutoSize = true;
-            this.hostlbl.Location = new System.Drawing.Point(268, 65);
+            this.hostlbl.Location = new System.Drawing.Point(268, 70);
             this.hostlbl.Name = "hostlbl";
             this.hostlbl.Size = new System.Drawing.Size(32, 13);
             this.hostlbl.TabIndex = 17;
@@ -248,7 +256,7 @@
             // 
             this.hostnamelbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.hostnamelbl.AutoSize = true;
-            this.hostnamelbl.Location = new System.Drawing.Point(307, 65);
+            this.hostnamelbl.Location = new System.Drawing.Point(307, 70);
             this.hostnamelbl.Name = "hostnamelbl";
             this.hostnamelbl.Size = new System.Drawing.Size(53, 13);
             this.hostnamelbl.TabIndex = 18;
@@ -258,7 +266,7 @@
             // manualHostAddbtn
             // 
             this.manualHostAddbtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.manualHostAddbtn.Location = new System.Drawing.Point(378, 174);
+            this.manualHostAddbtn.Location = new System.Drawing.Point(378, 179);
             this.manualHostAddbtn.Name = "manualHostAddbtn";
             this.manualHostAddbtn.Size = new System.Drawing.Size(34, 23);
             this.manualHostAddbtn.TabIndex = 19;
@@ -270,12 +278,21 @@
             // manualHostTextBox
             // 
             this.manualHostTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.manualHostTextBox.Location = new System.Drawing.Point(245, 176);
+            this.manualHostTextBox.Location = new System.Drawing.Point(245, 181);
             this.manualHostTextBox.Name = "manualHostTextBox";
             this.manualHostTextBox.Size = new System.Drawing.Size(127, 20);
             this.manualHostTextBox.TabIndex = 20;
             this.toolTip.SetToolTip(this.manualHostTextBox, "Manually add host or IP");
             this.manualHostTextBox.KeyUp += new System.Windows.Forms.KeyEventHandler(this.manualHostTextBox_KeyUp);
+            // 
+            // lookupBar
+            // 
+            this.lookupBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lookupBar.Location = new System.Drawing.Point(245, 207);
+            this.lookupBar.Name = "lookupBar";
+            this.lookupBar.Size = new System.Drawing.Size(167, 10);
+            this.lookupBar.TabIndex = 22;
+            this.toolTip.SetToolTip(this.lookupBar, "Lookup Progress");
             // 
             // hostsGrid
             // 
@@ -286,6 +303,7 @@
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.hostsGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.hostsGrid.ContextMenuStrip = this.hostsGridMenu;
             this.hostsGrid.Location = new System.Drawing.Point(12, 12);
             this.hostsGrid.MultiSelect = false;
             this.hostsGrid.Name = "hostsGrid";
@@ -301,15 +319,6 @@
             this.manualAddLookup.DoWork += new System.ComponentModel.DoWorkEventHandler(this.manualAddLookup_DoWork);
             this.manualAddLookup.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.manualAddLookup_RunWorkerCompleted);
             // 
-            // lookupBar
-            // 
-            this.lookupBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lookupBar.Location = new System.Drawing.Point(245, 202);
-            this.lookupBar.Name = "lookupBar";
-            this.lookupBar.Size = new System.Drawing.Size(167, 10);
-            this.lookupBar.TabIndex = 22;
-            this.toolTip.SetToolTip(this.lookupBar, "Lookup Progress");
-            // 
             // shutupbutton
             // 
             this.shutupbutton.Location = new System.Drawing.Point(24, 56);
@@ -320,12 +329,51 @@
             this.shutupbutton.UseVisualStyleBackColor = true;
             this.shutupbutton.Visible = false;
             // 
+            // searchButton
+            // 
+            this.searchButton.Enabled = false;
+            this.searchButton.Location = new System.Drawing.Point(332, 12);
+            this.searchButton.Name = "searchButton";
+            this.searchButton.Size = new System.Drawing.Size(80, 23);
+            this.searchButton.TabIndex = 24;
+            this.searchButton.Text = "Stop search";
+            this.toolTip.SetToolTip(this.searchButton, "Stop searching for computers on LAN");
+            this.searchButton.UseVisualStyleBackColor = true;
+            this.searchButton.Click += new System.EventHandler(this.searchButton_Click);
+            // 
+            // computerFinderListener
+            // 
+            this.computerFinderListener.WorkerReportsProgress = true;
+            this.computerFinderListener.WorkerSupportsCancellation = true;
+            this.computerFinderListener.DoWork += new System.ComponentModel.DoWorkEventHandler(this.computerFinderListener_DoWork);
+            this.computerFinderListener.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.computerFinderListener_ProgressChanged);
+            // 
+            // hostsGridMenu
+            // 
+            this.hostsGridMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItem1});
+            this.hostsGridMenu.Name = "hostsGridMenu";
+            this.hostsGridMenu.Size = new System.Drawing.Size(102, 26);
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(101, 22);
+            this.toolStripMenuItem1.Text = "Clear";
+            this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
+            // 
+            // searchTimer
+            // 
+            this.searchTimer.Interval = 2000;
+            this.searchTimer.Tick += new System.EventHandler(this.searchTimer_Tick);
+            // 
             // MainForm
             // 
             this.AcceptButton = this.shutupbutton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(424, 259);
+            this.Controls.Add(this.searchButton);
             this.Controls.Add(this.lookupBar);
             this.Controls.Add(this.hostsGrid);
             this.Controls.Add(this.manualHostTextBox);
@@ -354,6 +402,7 @@
             this.statusStrip.ResumeLayout(false);
             this.statusStrip.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.hostsGrid)).EndInit();
+            this.hostsGridMenu.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -387,5 +436,10 @@
         private System.ComponentModel.BackgroundWorker manualAddLookup;
         private System.Windows.Forms.ProgressBar lookupBar;
         private System.Windows.Forms.Button shutupbutton;
+        private System.Windows.Forms.Button searchButton;
+        private System.ComponentModel.BackgroundWorker computerFinderListener;
+        private System.Windows.Forms.ContextMenuStrip hostsGridMenu;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
+        private System.Windows.Forms.Timer searchTimer;
     }
 }
