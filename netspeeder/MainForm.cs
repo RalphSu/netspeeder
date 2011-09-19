@@ -142,7 +142,19 @@ namespace netspeeder
             CompFound c = e.UserState as CompFound;
             if (c.hostname != Environment.MachineName)
             {
-                lcf.Add(c);
+                Boolean exists = false;
+                //bindinglists are funny with foreach... (as in they don't work)
+                for (Int32 i = 0; i < lcf.Count; i++)
+                {
+                    if (lcf[i].hostname == c.hostname)
+                    {
+                        exists = true;
+                    }
+                }
+                if (exists == false)
+                {
+                    lcf.Add(c);
+                }
             }
         }
         public static IPAddress GetBroadcastAddress(IPAddress address, IPAddress subnetMask)
