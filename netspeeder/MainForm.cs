@@ -19,6 +19,7 @@ namespace netspeeder
         List<NetData> lnd = new List<NetData>();
         //Dictionary<String, IPAddress> compsFound = new Dictionary<String, IPAddress>();
         public BindingList<CompFound> lcf = new BindingList<CompFound>();
+        Boolean searchRan = false;
         public MainForm()
         {
             InitializeComponent();
@@ -79,6 +80,7 @@ namespace netspeeder
                 interfaceListBox.Items.Add(nd.netiface.Description);
             }
             speedTestRequestListener.RunWorkerAsync();
+            //MessageBox.Show(interfaceListBox.SelectedValue as String);
         }
 
         private void elipseTimer_Tick(object sender, EventArgs e)
@@ -97,6 +99,7 @@ namespace netspeeder
 
         private void computerFinder_DoWork(object sender, DoWorkEventArgs e)
         {
+            searchRan = true;
             Socket sock = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
             NetData given = e.Argument as NetData;
             IPEndPoint ipep = new IPEndPoint(given.broadcast, 7829);
@@ -176,6 +179,7 @@ namespace netspeeder
 
         private void startButton_Click(object sender, EventArgs e)
         {
+            testProgressBar.Style = ProgressBarStyle.Marquee;
             computerFinder.CancelAsync();
             IPAddress ip = IPAddress.Parse((hostsGrid.SelectedRows[0].Cells["ipaddr"].Value as String).TrimEnd('\n'));
             if (!speedTestRequester.IsBusy)
@@ -376,9 +380,9 @@ namespace netspeeder
             }
             sock.Close();
         }
-
         private void speedTestRequester_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            testProgressBar.Style = ProgressBarStyle.Blocks;
             if ((int)e.Result == 1)
             {
                 MessageBox.Show("Unable to connect to remote host", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -389,7 +393,10 @@ namespace netspeeder
             }
             System.Diagnostics.Debug.WriteLine("Requester stopped");
             startButton.Enabled = true;
-            searchButton.Enabled = true;
+            if (searchRan)
+            {
+                searchButton.Enabled = true;
+            }
         }
         private void speedTestRequestListener_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
