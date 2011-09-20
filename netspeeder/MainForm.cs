@@ -78,6 +78,7 @@ namespace netspeeder
             {
                 interfaceListBox.Items.Add(nd.netiface.Description);
             }
+            speedTestRequestListener.RunWorkerAsync();
         }
 
         private void elipseTimer_Tick(object sender, EventArgs e)
@@ -176,8 +177,14 @@ namespace netspeeder
         private void startButton_Click(object sender, EventArgs e)
         {
             computerFinder.CancelAsync();
-            IPAddress ip = IPAddress.Parse(hostsGrid.SelectedRows[0].Cells["ipaddr"].Value as String);
-            MessageBox.Show(ip.ToString());
+            IPAddress ip = IPAddress.Parse((hostsGrid.SelectedRows[0].Cells["ipaddr"].Value as String).TrimEnd('\n'));
+            if (!speedTestRequester.IsBusy)
+            {
+                speedTestRequester.RunWorkerAsync(ip);
+                System.Diagnostics.Debug.WriteLine("Requester started");
+                startButton.Enabled = false;
+                searchButton.Enabled = false;
+            }
         }
 
         private void interfaceListBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -301,6 +308,101 @@ namespace netspeeder
         {
             searchButton.Enabled = true;
             searchTimer.Enabled = false;
+        }
+
+        private void speedTestRequester_DoWork(object sender, DoWorkEventArgs e)
+        {
+            Socket sock = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+            IPAddress ip = e.Argument as IPAddress;
+            IPEndPoint ipep = new IPEndPoint(ip, 7830);
+            EndPoint ep = ipep;
+            Byte[] buf;
+            sock.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveTimeout, 1000);
+            Int32 counter = 0;
+            while (!speedTestRequester.CancellationPending)
+            {
+                try
+                {
+                    sock.SendTo(Encoding.UTF8.GetBytes("?" + Environment.MachineName), ipep);
+                    buf = new Byte[1024];
+                    sock.ReceiveFrom(buf, ref ep);
+                    if (buf[0] == 0x31)
+                    {
+                        MessageBox.Show("Speedtest request accepted");
+                        e.Result = 0;
+                        break;
+                    }
+                }
+                catch (Exception)
+                {
+                    //do nothing
+                }
+                if (counter++ > 15)
+                {
+                    e.Result = 1;
+                    break;
+                }
+            }
+            sock.Close();
+
+        }
+
+        private void speedTestRequestListener_DoWork(object sender, DoWorkEventArgs e)
+        {
+            Socket sock = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+            IPEndPoint ipep = new IPEndPoint(IPAddress.Any, 7830);
+            EndPoint ep = ipep;
+            sock.Bind(ipep as EndPoint);
+            Byte[] buf;
+            sock.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveTimeout, 1000);
+            while (!speedTestRequestListener.CancellationPending)
+            {   
+                try
+                {
+                    buf = new Byte[50];
+                    sock.ReceiveFrom(buf, ref ep);
+                    System.Diagnostics.Debug.WriteLine(BitConverter.ToString(buf));
+                    if (buf[0] == 0x3F)
+                    {
+                        sock.SendTo(new Byte[] { 0x31 }, ep);
+                        //MessageBox.Show("Speedtest Request from: " + Encoding.UTF8.GetString(buf).Substring(1).TrimEnd('\0'));
+                        break;
+                    }
+                }
+                catch (Exception)
+                {
+                    //do nothing
+                }
+            }
+            sock.Close();
+        }
+
+        private void speedTestRequester_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if ((int)e.Result == 1)
+            {
+                MessageBox.Show("Unable to connect to remote host", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else
+            {
+                speedTestServer.RunWorkerAsync();
+            }
+            System.Diagnostics.Debug.WriteLine("Requester stopped");
+            startButton.Enabled = true;
+            searchButton.Enabled = true;
+        }
+        private void speedTestRequestListener_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+
+        }
+        private void speedTestServer_DoWork(object sender, DoWorkEventArgs e)
+        {
+
+        }
+
+        private void speedTestClient_DoWork(object sender, DoWorkEventArgs e)
+        {
+
         }
     }
 }

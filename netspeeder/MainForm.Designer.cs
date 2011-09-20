@@ -52,14 +52,18 @@
             this.manualHostAddbtn = new System.Windows.Forms.Button();
             this.manualHostTextBox = new System.Windows.Forms.TextBox();
             this.lookupBar = new System.Windows.Forms.ProgressBar();
-            this.hostsGrid = new System.Windows.Forms.DataGridView();
-            this.manualAddLookup = new System.ComponentModel.BackgroundWorker();
-            this.shutupbutton = new System.Windows.Forms.Button();
             this.searchButton = new System.Windows.Forms.Button();
-            this.computerFinderListener = new System.ComponentModel.BackgroundWorker();
+            this.hostsGrid = new System.Windows.Forms.DataGridView();
             this.hostsGridMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.manualAddLookup = new System.ComponentModel.BackgroundWorker();
+            this.shutupbutton = new System.Windows.Forms.Button();
+            this.computerFinderListener = new System.ComponentModel.BackgroundWorker();
             this.searchTimer = new System.Windows.Forms.Timer(this.components);
+            this.speedTestRequester = new System.ComponentModel.BackgroundWorker();
+            this.speedTestRequestListener = new System.ComponentModel.BackgroundWorker();
+            this.speedTestServer = new System.ComponentModel.BackgroundWorker();
+            this.speedTestClient = new System.ComponentModel.BackgroundWorker();
             this.statusStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.hostsGrid)).BeginInit();
             this.hostsGridMenu.SuspendLayout();
@@ -294,6 +298,18 @@
             this.lookupBar.TabIndex = 22;
             this.toolTip.SetToolTip(this.lookupBar, "Lookup Progress");
             // 
+            // searchButton
+            // 
+            this.searchButton.Enabled = false;
+            this.searchButton.Location = new System.Drawing.Point(332, 12);
+            this.searchButton.Name = "searchButton";
+            this.searchButton.Size = new System.Drawing.Size(80, 23);
+            this.searchButton.TabIndex = 24;
+            this.searchButton.Text = "Stop search";
+            this.toolTip.SetToolTip(this.searchButton, "Stop searching for computers on LAN");
+            this.searchButton.UseVisualStyleBackColor = true;
+            this.searchButton.Click += new System.EventHandler(this.searchButton_Click);
+            // 
             // hostsGrid
             // 
             this.hostsGrid.AllowUserToAddRows = false;
@@ -314,6 +330,20 @@
             this.hostsGrid.TabIndex = 21;
             this.hostsGrid.RowEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.hostsGrid_RowEnter);
             // 
+            // hostsGridMenu
+            // 
+            this.hostsGridMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItem1});
+            this.hostsGridMenu.Name = "hostsGridMenu";
+            this.hostsGridMenu.Size = new System.Drawing.Size(102, 26);
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(101, 22);
+            this.toolStripMenuItem1.Text = "Clear";
+            this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
+            // 
             // manualAddLookup
             // 
             this.manualAddLookup.DoWork += new System.ComponentModel.DoWorkEventHandler(this.manualAddLookup_DoWork);
@@ -329,18 +359,6 @@
             this.shutupbutton.UseVisualStyleBackColor = true;
             this.shutupbutton.Visible = false;
             // 
-            // searchButton
-            // 
-            this.searchButton.Enabled = false;
-            this.searchButton.Location = new System.Drawing.Point(332, 12);
-            this.searchButton.Name = "searchButton";
-            this.searchButton.Size = new System.Drawing.Size(80, 23);
-            this.searchButton.TabIndex = 24;
-            this.searchButton.Text = "Stop search";
-            this.toolTip.SetToolTip(this.searchButton, "Stop searching for computers on LAN");
-            this.searchButton.UseVisualStyleBackColor = true;
-            this.searchButton.Click += new System.EventHandler(this.searchButton_Click);
-            // 
             // computerFinderListener
             // 
             this.computerFinderListener.WorkerReportsProgress = true;
@@ -348,24 +366,31 @@
             this.computerFinderListener.DoWork += new System.ComponentModel.DoWorkEventHandler(this.computerFinderListener_DoWork);
             this.computerFinderListener.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.computerFinderListener_ProgressChanged);
             // 
-            // hostsGridMenu
-            // 
-            this.hostsGridMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripMenuItem1});
-            this.hostsGridMenu.Name = "hostsGridMenu";
-            this.hostsGridMenu.Size = new System.Drawing.Size(102, 26);
-            // 
-            // toolStripMenuItem1
-            // 
-            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(101, 22);
-            this.toolStripMenuItem1.Text = "Clear";
-            this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
-            // 
             // searchTimer
             // 
             this.searchTimer.Interval = 2000;
             this.searchTimer.Tick += new System.EventHandler(this.searchTimer_Tick);
+            // 
+            // speedTestRequester
+            // 
+            this.speedTestRequester.DoWork += new System.ComponentModel.DoWorkEventHandler(this.speedTestRequester_DoWork);
+            this.speedTestRequester.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.speedTestRequester_RunWorkerCompleted);
+            // 
+            // speedTestRequestListener
+            // 
+            this.speedTestRequestListener.WorkerSupportsCancellation = true;
+            this.speedTestRequestListener.DoWork += new System.ComponentModel.DoWorkEventHandler(this.speedTestRequestListener_DoWork);
+            this.speedTestRequestListener.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.speedTestRequestListener_RunWorkerCompleted);
+            // 
+            // speedTestServer
+            // 
+            this.speedTestServer.WorkerReportsProgress = true;
+            this.speedTestServer.DoWork += new System.ComponentModel.DoWorkEventHandler(this.speedTestServer_DoWork);
+            // 
+            // speedTestClient
+            // 
+            this.speedTestClient.WorkerReportsProgress = true;
+            this.speedTestClient.DoWork += new System.ComponentModel.DoWorkEventHandler(this.speedTestClient_DoWork);
             // 
             // MainForm
             // 
@@ -441,5 +466,9 @@
         private System.Windows.Forms.ContextMenuStrip hostsGridMenu;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
         private System.Windows.Forms.Timer searchTimer;
+        private System.ComponentModel.BackgroundWorker speedTestRequester;
+        private System.ComponentModel.BackgroundWorker speedTestRequestListener;
+        private System.ComponentModel.BackgroundWorker speedTestServer;
+        private System.ComponentModel.BackgroundWorker speedTestClient;
     }
 }
