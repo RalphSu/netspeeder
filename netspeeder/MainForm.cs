@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using System.Net;
 using System.Net.Sockets;
 using System.Net.NetworkInformation;
+using System.Diagnostics;
 
 namespace netspeeder
 {
@@ -185,7 +186,7 @@ namespace netspeeder
             if (!speedTestRequester.IsBusy)
             {
                 speedTestRequester.RunWorkerAsync(ip);
-                System.Diagnostics.Debug.WriteLine("Requester started");
+                Debug.WriteLine("Requester started");
                 startButton.Enabled = false;
                 searchButton.Enabled = false;
             }
@@ -221,7 +222,7 @@ namespace netspeeder
                         hostname = ihe.HostName,
                         ip = parsed.ToString()
                     });
-                    System.Diagnostics.Debug.WriteLine("IP");
+                    Debug.WriteLine("IP");
                 }
                 catch (Exception ex)
                 {
@@ -240,7 +241,7 @@ namespace netspeeder
                         }
                         //i2++;
                     }
-                    System.Diagnostics.Debug.WriteLine("Host");
+                    Debug.WriteLine("Host");
                 }
                 e.Result = lcfl;
             }
@@ -332,7 +333,7 @@ namespace netspeeder
                     sock.ReceiveFrom(buf, ref ep);
                     if (buf[0] == 0x31)
                     {
-                        MessageBox.Show("Speedtest request accepted");
+                        //MessageBox.Show("Speedtest request accepted");
                         e.Result = 0;
                         break;
                     }
@@ -359,17 +360,19 @@ namespace netspeeder
             sock.Bind(ipep as EndPoint);
             Byte[] buf;
             sock.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveTimeout, 1000);
+            e.Result = 1;
             while (!speedTestRequestListener.CancellationPending)
             {   
                 try
                 {
                     buf = new Byte[50];
                     sock.ReceiveFrom(buf, ref ep);
-                    System.Diagnostics.Debug.WriteLine(BitConverter.ToString(buf));
+                    Debug.WriteLine(BitConverter.ToString(buf));
                     if (buf[0] == 0x3F)
                     {
                         sock.SendTo(new Byte[] { 0x31 }, ep);
                         //MessageBox.Show("Speedtest Request from: " + Encoding.UTF8.GetString(buf).Substring(1).TrimEnd('\0'));
+                        e.Result = 0;
                         break;
                     }
                 }
@@ -385,13 +388,14 @@ namespace netspeeder
             testProgressBar.Style = ProgressBarStyle.Blocks;
             if ((int)e.Result == 1)
             {
-                MessageBox.Show("Unable to connect to remote host", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Unable to connect to remote host\nIs the host busy or offline?", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             else
             {
-                speedTestServer.RunWorkerAsync();
+                speedTestClient.RunWorkerAsync();
+                Debug.WriteLine("Speed test client started");
             }
-            System.Diagnostics.Debug.WriteLine("Requester stopped");
+            Debug.WriteLine("Requester stopped");
             startButton.Enabled = true;
             if (searchRan)
             {
@@ -400,10 +404,42 @@ namespace netspeeder
         }
         private void speedTestRequestListener_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-
+            if ((int)e.Result == 0)
+            {
+                speedTestServer.RunWorkerAsync();
+                Debug.WriteLine("Speed test server started");
+            }
         }
         private void speedTestServer_DoWork(object sender, DoWorkEventArgs e)
         {
+            //blah, I'll just use udp as I don't want to do anymore crazy workarounds
+            //for backgroundworker to get a tcp accept to stop like I can with udp
+
+            //Socket sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            //IPEndPoint ipep = new IPEndPoint(IPAddress.Any, 7830);
+            //sock.Bind(ipep);
+            //sock.Listen(10);
+            //Socket client;
+            //IPEndPoint cipep;
+            //while (!speedTestServer.CancellationPending)
+            //{
+            //    try
+            //    {
+            //        client = sock.Accept();
+            //        cipep = client.RemoteEndPoint as IPEndPoint;
+            //        Debug.WriteLine("Connected to " + cipep.ToString());
+            //        while (!speedTestServer.CancellationPending)
+            //        {
+            //            Byte[] cdata = new Byte[50];
+
+            //        }
+            //    }
+            //    catch(Exception)
+            //    {
+            //        //do nothing
+            //    }
+            //}
+
 
         }
 
