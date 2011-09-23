@@ -386,11 +386,15 @@
             // 
             this.speedTestServer.WorkerReportsProgress = true;
             this.speedTestServer.DoWork += new System.ComponentModel.DoWorkEventHandler(this.speedTestServer_DoWork);
+            this.speedTestServer.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.speedTestServer_ProgressChanged);
+            this.speedTestServer.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.speedTestServer_RunWorkerCompleted);
             // 
             // speedTestClient
             // 
             this.speedTestClient.WorkerReportsProgress = true;
             this.speedTestClient.DoWork += new System.ComponentModel.DoWorkEventHandler(this.speedTestClient_DoWork);
+            this.speedTestClient.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.speedTestClient_ProgressChanged);
+            this.speedTestClient.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.speedTestClient_RunWorkerCompleted);
             // 
             // MainForm
             // 

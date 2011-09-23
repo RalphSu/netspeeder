@@ -10,6 +10,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Net.NetworkInformation;
 using System.Diagnostics;
+using System.IO;
 
 namespace netspeeder
 {
@@ -21,6 +22,9 @@ namespace netspeeder
         //Dictionary<String, IPAddress> compsFound = new Dictionary<String, IPAddress>();
         public BindingList<CompFound> lcf = new BindingList<CompFound>();
         Boolean searchRan = false;
+        Boolean listererStartedOnce = false;
+        Boolean showCompFindDone = true;
+        Random rand = new Random();
         public MainForm()
         {
             InitializeComponent();
@@ -80,7 +84,6 @@ namespace netspeeder
             {
                 interfaceListBox.Items.Add(nd.netiface.Description);
             }
-            speedTestRequestListener.RunWorkerAsync();
             //MessageBox.Show(interfaceListBox.SelectedValue as String);
         }
 
@@ -194,6 +197,11 @@ namespace netspeeder
 
         private void interfaceListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (!listererStartedOnce)
+            {
+                speedTestRequestListener.RunWorkerAsync();
+                listererStartedOnce = true;
+            }
             searchButton.Enabled = true;
             searchButton.PerformClick();
         }
@@ -279,7 +287,10 @@ namespace netspeeder
         private void computerFinder_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             elipseTimer.Enabled = false;
-            statusLabel.Text = "Done searching.";
+            if (showCompFindDone)
+            {
+                statusLabel.Text = "Done searching.";
+            }
             searchButton.Text = "Start search";
         }
 
@@ -406,6 +417,11 @@ namespace netspeeder
         {
             if ((int)e.Result == 0)
             {
+                elipseTimer.Enabled = false;
+                showCompFindDone = false;
+                computerFinder.CancelAsync();
+                searchButton.Enabled = false;
+                statusLabel.Text = "Speed test server mode activated.";
                 speedTestServer.RunWorkerAsync();
                 Debug.WriteLine("Speed test server started");
             }
@@ -441,11 +457,127 @@ namespace netspeeder
             //}
 
 
+            Socket sock = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+            IPEndPoint ipep = new IPEndPoint(IPAddress.Any, 7830);
+            EndPoint ep = ipep;
+            sock.Bind(ipep as EndPoint);
+            Byte[] buf;
+            sock.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveTimeout, 1000);
+            e.Result = 1;
+            while (!speedTestRequestListener.CancellationPending)
+            {
+                try
+                {
+                    buf = new Byte[10];
+                    sock.ReceiveFrom(buf, ref ep);
+                    Debug.WriteLine(BitConverter.ToString(buf));
+                    if (buf[0] == 0x2F)
+                    {
+                        if (buf[1] == 0x30)
+                        {
+                            Byte[] sendBuf = new Byte[1024];
+                            MemoryStream ms = new MemoryStream();
+                            BinaryWriter bw = new BinaryWriter(ms);
+                            bw.Write(DateTime.Now.ToUniversalTime().Ticks);
+                            bw.Write(DateTime.Now.ToUniversalTime().Millisecond);
+                            rand.NextBytes(sendBuf);
+                            bw.Write(sendBuf);
+                            bw.Flush();
+                            sendBuf = ms.ToArray();
+                            bw.Close();
+                            sock.SendTo(sendBuf, ep);
+                        }
+                        else if (buf[1] == 0x31)
+                        {
+                            sock.SendTo(Encoding.UTF8.GetBytes("LST:CTS"), ep);
+                            Byte[] cbuf = new Byte[1200];
+                            EndPoint ep2 = ep;
+                            Int32 totalBytes = 0;
+                            Double totalTime = 0;
+                            for (Int32 i = 0; i < 100; i++)
+                            {
+                                if(!speedTestServer.CancellationPending)
+                                {
+                                    Int32 brecv = sock.ReceiveFrom(buf, ref ep2);
+                                    MemoryStream ms = new MemoryStream(cbuf, 0, brecv);
+                                    BinaryReader br = new BinaryReader(ms);
+                                    Int64 timeSentTicks = br.ReadInt64();
+                                    Int32 timeSentMillis = br.ReadInt32();
+                                    totalBytes += 1024;
+                                    Double totalDiff = (timeSentTicks - DateTime.Now.ToUniversalTime().Ticks) * 1000;
+                                    totalDiff += timeSentMillis;
+                                    totalDiff -= DateTime.Now.ToUniversalTime().Millisecond;
+                                    totalTime += totalDiff;
+                                }
+                                speedTestServer.ReportProgress(i);
+                            }
+                            Double bytePerSecond = totalBytes / totalTime;
+                            sock.SendTo(BitConverter.GetBytes(bytePerSecond), ep2);
+                            speedTestServer.ReportProgress(0, new Object[]{"Download", bytePerSecond});
+                        }
+                        else if (buf[1] == 0x32)
+                        {
+                            sock.SendTo(Encoding.UTF8.GetBytes("LST:CTERM"), ep);
+                            break;
+                        }
+                    }
+                 }
+                catch (Exception)
+                {
+                    //do nothing
+                }
+            }
+            sock.Close();
         }
 
         private void speedTestClient_DoWork(object sender, DoWorkEventArgs e)
         {
 
+        }
+
+        private void speedTestServer_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            searchButton.Enabled = true;
+            startButton.Enabled = true;
+            showCompFindDone = true;
+            statusLabel.Text = "Speed test server mode deactivated";
+        }
+        private void speedTestClient_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            searchButton.Enabled = true;
+            startButton.Enabled = true;
+            showCompFindDone = true;
+            statusLabel.Text = "Speed test client mode deactivated";
+        }
+        private void speedTestServer_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            testProgressBar.Value = e.ProgressPercentage;
+            if (e.UserState != null)
+            {
+                speedSet((Object[])e.UserState);
+            }
+        }
+        private void speedSet(Object[] e)
+        {
+            Double mbits = (Double)e[1] / 1048576.0f;
+            String labelText = Convert.ToString(mbits + " mbps");
+            if ((String)e[0] == "Download")
+            {
+                downloadSpeedVlbl.Text = labelText;
+            }
+            else if ((String)e[0] == "Upload")
+            {
+                uploadSpeedVlbl.Text = labelText;
+            }
+        }
+
+        private void speedTestClient_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            testProgressBar.Value = e.ProgressPercentage;
+            if (e.UserState != null)
+            {
+                speedSet((Object[])e.UserState);
+            }
         }
     }
 }
