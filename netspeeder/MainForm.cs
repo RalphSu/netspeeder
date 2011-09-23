@@ -185,6 +185,7 @@ namespace netspeeder
         {
             testProgressBar.Style = ProgressBarStyle.Marquee;
             computerFinder.CancelAsync();
+            speedTestRequestListener.CancelAsync();
             IPAddress ip = IPAddress.Parse((hostsGrid.SelectedRows[0].Cells["ipaddr"].Value as String).TrimEnd('\n'));
             if (!speedTestRequester.IsBusy)
             {
@@ -192,6 +193,7 @@ namespace netspeeder
                 Debug.WriteLine("Requester started");
                 startButton.Enabled = false;
                 searchButton.Enabled = false;
+                interfaceListBox.Enabled = false;
             }
         }
 
@@ -421,6 +423,7 @@ namespace netspeeder
                 showCompFindDone = false;
                 computerFinder.CancelAsync();
                 searchButton.Enabled = false;
+                startButton.Enabled = false;
                 statusLabel.Text = "Speed test server mode activated.";
                 speedTestServer.RunWorkerAsync();
                 Debug.WriteLine("Speed test server started");
@@ -539,15 +542,19 @@ namespace netspeeder
         {
             searchButton.Enabled = true;
             startButton.Enabled = true;
+            interfaceListBox.Enabled = true;
             showCompFindDone = true;
             statusLabel.Text = "Speed test server mode deactivated";
+            speedTestRequestListener.RunWorkerAsync();
         }
         private void speedTestClient_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             searchButton.Enabled = true;
             startButton.Enabled = true;
+            interfaceListBox.Enabled = true;
             showCompFindDone = true;
             statusLabel.Text = "Speed test client mode deactivated";
+            speedTestRequestListener.RunWorkerAsync();
         }
         private void speedTestServer_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
