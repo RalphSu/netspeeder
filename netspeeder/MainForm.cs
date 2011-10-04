@@ -85,6 +85,10 @@ namespace netspeeder
                 interfaceListBox.Items.Add(nd.netiface.Description);
             }
             //MessageBox.Show(interfaceListBox.SelectedValue as String);
+            String topBtm = "+------------------------------------------------------+";
+            Debug.WriteLine(topBtm);
+            Debug.WriteLine("|Ignore the exceptions about sockets that show up below|");
+            Debug.WriteLine(topBtm);
         }
 
         private void elipseTimer_Tick(object sender, EventArgs e)
@@ -183,6 +187,7 @@ namespace netspeeder
 
         private void startButton_Click(object sender, EventArgs e)
         {
+            statusLabel.Text = "Starting test...";
             testProgressBar.Style = ProgressBarStyle.Marquee;
             computerFinder.CancelAsync();
             speedTestRequestListener.CancelAsync();
