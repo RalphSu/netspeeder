@@ -1,0 +1,1 @@
+A simple application that tests LAN throughput using two computers on your LAN (one functions as a server, other functions as a client) and requires zero configuration!
